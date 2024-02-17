@@ -23,7 +23,7 @@ class NaiveBayes:
 
         self.label_word_counts = {}
         for label in self.labels:
-            self.label_word_counts[label] = defaultdict(0)
+            self.label_word_counts[label] = defaultdict(float)
 
         self.label_total_word_counts = {}
         for label in self.labels:
@@ -62,11 +62,11 @@ class NaiveBayes:
         for label in self.labels:
             print(
                 "NUMBER OF DOCUMENTS IN {} CLASS:".format(label),
-                self.class_total_doc_counts[label],
+                self.label_total_doc_counts[label],
             )
             print(
                 "NUMBER OF TOKENS IN {} CLASS:".format(label),
-                self.class_total_word_counts[label],
+                self.label_total_word_counts[label],
             )
 
         print(
@@ -111,7 +111,7 @@ class NaiveBayes:
         bow = self.tokenize(doc_content)
 
         self.label_total_doc_counts[label] += 1
-        self.label_word_counts[label] += sum(bow.values())
+        self.label_total_word_counts[label] += sum(bow.values())
         self.vocab.update(bow.keys())
         for word, count in bow.items():
             self.label_word_counts[label][word] += count

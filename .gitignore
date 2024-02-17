@@ -1,3 +1,5 @@
 .env
 OAI_CONFIG_LIST.json
 .cache
+datasets
+output_texts
