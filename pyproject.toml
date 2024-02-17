@@ -12,6 +12,7 @@ pyautogen = "^0.2.14"
 tiktoken = "^0.6.0"
 pytest = "^8.0.1"
 load-dotenv = "^0.1.0"
+nltk = "^3.8.1"
 
 
 [build-system]

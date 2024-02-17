@@ -60,3 +60,17 @@ def test_text_2_image_route():
         r = ai.handle_message("Dog playing in water", "image")
     except Exception as e:
         pytest.fail("Did not expect error: {}".format(e))
+
+
+def test_autogen_route():
+    ai = AI()
+
+    try:
+        r = ai.handle_message(
+            "What date is today? Compare the year-to-date gain for META and TESLA.",
+            "autogen",
+        )
+        assert len(ai.contexts[ai.current_context + "-autogen"]) > 1
+
+    except Exception as e:
+        pytest.fail("Did not expect error: {}".format(e))
