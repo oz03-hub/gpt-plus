@@ -5,6 +5,7 @@ import tiktoken
 import os
 
 from autogenmod import route
+from naivebayes import NaiveBayes, depickle_data
 
 load_dotenv()
 
@@ -61,6 +62,7 @@ def num_tokens_from_messages(messages, model=os.environ["TEXT_MODEL"]):
 class AI:
     def __init__(self) -> None:
         self.client = OpenAI()
+        self.trained_nb = depickle_data("./pickle-db/pickle", "./datasets")
         self.text_model_name = os.environ["TEXT_MODEL"]
         self.image_model_name = os.environ["IMAGE_MODEL"]
         self.contexts = defaultdict(
@@ -71,6 +73,13 @@ class AI:
     def switch_context(self, switch_to: str):
         self.current_context = switch_to
         return self.contexts[self.current_context]
+
+    def list_context(self):
+        s = ""
+        for k in self.contexts.keys():
+            s += k + "\n"
+
+        return s
 
     def handle_text_to_text_message(self, new_message: str):
         context_messages = self.contexts[self.current_context]
@@ -105,7 +114,11 @@ class AI:
         elif command == "autogen":
             return self.handle_autogen(new_message)
         else:
-            pass  # bayes inference route
+            prediction = self.trained_nb.classify(self.trained_nb.tokenize(new_message))
+            if prediction == "image":
+                return self.handle_text_to_image(new_message)
+            else:
+                return self.handle_text_to_text_message(new_message)
 
     def text_to_text(self, messages: list[dict[str | str]]):
         response = self.client.chat.completions.create(
